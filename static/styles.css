@@ -1,0 +1,218 @@
+html{
+    position: relative;
+}
+nav {
+    background-color: rgba(251,192,83,255);
+}
+
+.bg-yellow {
+    background-color: rgba(251,192,83,255);
+}
+
+main .form-control
+{
+    /* Center form controls */
+    display: inline-block;
+
+    /* Override Bootstrap's 100% width for form controls */
+    width: auto;
+}
+
+main
+{
+    /* Scroll horizontally as needed */
+    overflow-x: auto;
+
+    /* Center contents */
+    text-align: center;
+}
+
+img
+{
+    /* Constrain images on small screens */
+    max-width: 80%;
+}
+
+p.center {
+    text-align: center;
+}
+
+h2
+{
+    text-align: center;
+}
+
+.column
+{
+    float: left;
+    width: 16.66%;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+
+a {
+    color: rgb(186,74,28);
+}
+
+a:visited {
+    color: rgb(159,138,130);
+    text-decoration: dashed;
+}
+
+a:hover {
+    color: rgb(221,164,135);
+}
+
+li
+{
+    list-style: None;
+}
+
+body {
+    min-height: 100vh;
+    background-color: rgb(229,227,226);
+    font-family: Geneva, Tahoma, Verdana, sans-serif;
+}
+
+footer {
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+    width: 100%;
+    background: url("/static/imgs/fondocuadrille.jpg");
+    background-repeat: repeat;
+    background-color: #000;
+    text-align: right;
+    padding: 1em;
+    font-size: small;
+}
+
+footer a{
+    color: #000;
+}
+
+footer a:visited{
+    color: #000;
+}
+
+button {
+    background-color: rgb(177,114,105);
+    border: none;
+    color: white;
+    padding: 10px 25px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5%;
+    transition-duration: 0.4s;
+}
+.buttonindex {
+    background-color: rgb(159,138,130);
+}
+
+
+
+button:hover {
+    background-color: rgb(177,114,105,0.8);
+}
+
+input, select, textarea {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+  }
+
+input:focus, textarea:focus {
+    box-shadow: 0 0 3px 3px #b8b4b4;
+}
+
+.inputfocus{
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+}
+
+.inputfocus:focus{
+    box-shadow: 0 0 3px 3px #b8b4b4;
+    border: 1px solid #ccc;
+}
+
+.inputindex{
+    width: 300px;
+    max-width: 100%;
+}
+
+.name, .category, textarea {
+    width: 500px;
+    max-width: 100%;
+}
+
+.ingredient {
+    width: 250px;
+    max-width: 45%;
+}
+
+.amount{
+    width: 120px;
+    max-width: 22%;
+}
+
+.measure {
+    width: 120px;
+    max-width: 22%;
+}
+
+.addremove {
+    width: 30px;
+    max-width: 10%;
+    justify-content: right;
+}
+  
+label {
+    padding: 12px 12px 12px 0;
+    display: inline-block;
+  }
+
+.form-addrecipe{
+    padding-left: 0px;
+    padding-bottom: 0.5em;
+    padding-top: 0.5em;
+    position: relative;
+    justify-content: center;
+    text-align: left;
+    margin: 0px auto;
+    width: 500px;
+    max-width: 100%;
+}
+
+.divcenter {
+    text-align: center;
+}
+
+table{
+    margin: auto;
+}
+.table-ingredients{
+    width: 200px;
+    max-width: 60%;
+}
+
+.table-amounts{
+    text-align: center;
+    width: 65px;
+    max-width: 20%;
+}
+
+.table-measures{
+    text-align: center;
+    width: 90px;
+    max-width: 20%;
+}

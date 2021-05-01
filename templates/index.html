@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Index
+{% endblock %}
+
+{% block main %}
+   <h3>Today I have...</h3>
+   <p style="color: red">{{ message }}</p>
+   <form action="/" method="POST">
+      <div class="form-group, input-wrapper">
+            <input autocomplete="off" autofocus class="inputfocus inputindex form-control" name="ingredients" placeholder="Ingredient 1, ingredient 2, ..." type="text" value="">
+        </div>
+         <br>
+        <button class="buttonindex" action="/" name="submit" value="WhatCook" type="submit">What do I cook?</button>
+   </form>
+{% endblock %}

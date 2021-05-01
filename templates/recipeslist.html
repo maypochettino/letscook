@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    List of recipes
+{% endblock %}
+
+{% block main %}
+    <h2>Recipe's list</h2>
+    <p style="color: red">{{ message }}</p>
+    <form action="/recipeslist" method="POST">
+        <input type="text" name="search" placeholder="Recipe's name">
+        <button class="" action="/recipeslist" name="search" value="Search" type="submit">Search</button>
+    </form>
+    <br>
+    <br>
+        {% for recipe in resultRecipes %}
+        <h3>{{ recipe["name"][0] }}</h3>
+        <br>
+        <h4>Ingredients:</h4>
+        <div class="divcenter">
+            <table class="">
+                <tbody>
+                    <tr>
+                        <td class="table-ingredients">
+                        {% for i in recipe["ingredients"] %}
+                        <li>{{ i[0] }}</li>
+                        {% endfor %}
+                        </td>
+                        <td class="table-amounts">
+                        {% for a in recipe["amounts"] %}
+                        <li>{{ a }} </li>
+                        {% endfor %}
+                        </td>
+                        <td class="table-measures">
+                        {% for m in recipe["measures"] %}
+                        <li>{{ m[0] }}</li>
+                        {% endfor %}
+                        </td>
+                    </tr>  
+                </tbody>
+            </table>
+        
+            <br>
+            <h4>Instructions:</h4>
+            <p>{{ recipe["instructions"][0] }}</p>
+            <p><em><strong>Category:</strong> {{ recipe["category"][0] }}</em></p>
+            <h3>-</h3>
+        </div>
+        {% endfor %}
+
+{% endblock %}

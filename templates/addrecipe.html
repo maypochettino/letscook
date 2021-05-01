@@ -1,0 +1,63 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Add Recipes
+{% endblock %}
+
+{% block main %}
+    <h2>Add Recipes:</h2>
+    <p style="color: red">{{ message }}</p>
+    <div class="divcenter">
+        <form action="/addrecipe" method="POST">
+        <div class="form-addrecipe">
+                <input autocomplete="off" autofocus class="name" name="name" placeholder="Name" type="text">
+        </div>
+
+        <div class="form-addrecipe input-wrapper">
+            <input type="text" name="ingredient[]" value="" autocomplete="off" class="ingredient" placeholder="Ingredient"/>
+            <input type="text" name="amount[]" value="" autocomplete="off" class="amount" placeholder="Amount" >
+            <select autocomplete="off" class="measure" name="measure[]" placeholder="Measure" type="text">
+                    <option disabled selected value="">Measure</option>
+                    {% for measure in measures %}
+                    <option value="{{ measure }}">{{ measure }}</option>
+                    {% endfor %}
+                </select>
+            <a href="javascript:void(0);" class="add-input" title="Add input">(+)</a>
+        </div>
+        <div class="form-addrecipe">
+                <input autocomplete="off" class="category" name="category" placeholder="Category: sweet, salty, ..." type="text">
+        </div>
+        <div class="form-addrecipe">
+                <textarea autocomplete="off" class="" name="instructions" placeholder="Instructions" type="text"></textarea>
+        </div>
+        <button action="/addrecipe" name="submit" value="addRecipe" type="submit">Add</button>
+        </form>
+    </div>
+    <br>
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script>
+    $(document).ready(function(){
+        var max_input_fields = 15;
+        var add_input = $('.add-input');
+        var input_wrapper = $('.input-wrapper');
+        var new_input = '<div> <input type="text" name="ingredient[]" value="" autocomplete="off" class="ingredient" placeholder="Ingredient"/> <input type="text" name="amount[]" value="" autocomplete="off" class="amount" placeholder="Amount" > <select autocomplete="off" class="measure" name="measure[]" placeholder="Measure" type="text"> <option disabled selected value="">Measure</option>{% for measure in measures %}<option value="{{ measure }}">{{ measure }}</option>{% endfor %}</select> <a href="javascript:void(0);" class="addremove remove-input" title="Remove input">(-)</a></div>';
+        var add_input_count = 1;
+        $(add_input).click(function(){
+            if(add_input_count < max_input_fields){
+                add_input_count++;
+                $(input_wrapper).append(new_input);
+            }
+        });
+        $(input_wrapper).on('click', '.remove-input', function(e){
+            e.preventDefault();
+            $(this).parent('div').remove();
+            add_input_count--;
+        });
+    });
+    </script>
+
+
+{% endblock %}

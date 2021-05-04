@@ -16,17 +16,6 @@ import smtplib
 # Configure application
 app = Flask(__name__)
 
-# Configure e-mail
-#app.config.update(MAIL_DEFAULT_SENDER=os.getenv("MAIL_DEFAULT_SENDER"),
-#                  MAIL_USERNAME=os.getenv("MAIL_USERNAME"),
-#                  MAIL_PASSWORD=os.getenv("MAIL_PASSWORD"),
-#                  MAIL_PORT=993,
-#                  MAIL_SERVER="imap.gmail.com",
-#                  MAIL_USE_SSL = True,
-#                  MAIL_USE_TLS=False)
-
-#mail = Mail(app)
-
 # Ensure templates are auto-reloaded
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
@@ -40,7 +29,7 @@ def after_request(response):
 
 # Configure session to use filesystem (instead of signed cookies)
 app.config["SESSION_FILE_DIR"] = mkdtemp()
-app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 

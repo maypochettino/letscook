@@ -33,6 +33,9 @@ app.config["SESSION_PERMANENT"] = True
 app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
+#Config postgreSQL Heroku
+SECRET_KEY = os.environ.get('SECRET_KEY')
+SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 # Configure  SQLite database
 conexion = sqlite3.connect('recipes.db', check_same_thread=False)
 db = conexion.cursor()

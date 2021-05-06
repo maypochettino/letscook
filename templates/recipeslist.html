@@ -16,7 +16,7 @@
         {% for recipe in resultRecipes %}
         <h3>{{ recipe["name"][0] }}</h3>
         <br>
-        <h4>Ingredients:</h4>
+        <p><strong>Ingredientes:</strong></p>
         <div class="divcenter">
             <table class="">
                 <tbody>
@@ -41,10 +41,10 @@
             </table>
         
             <br>
-            <h4>Instructions:</h4>
+            <p><strong>Instrucciones:</strong></p>
             <p>{{ recipe["instructions"][0] }}</p>
-            <p><em><strong>Category:</strong> {{ recipe["category"][0] }}</em></p>
-            <h3>-</h3>
+            <p><em>Categoría: {{ recipe["category"][0] }}</em></p>
+            <h3>-------------------</h3>
         </div>
         {% endfor %}
 

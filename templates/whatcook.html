@@ -8,38 +8,38 @@
 <h3>You could cook the following recipes with your ingredients and maybe others too:</h3>
     <br>
     {% for recipe in resultRecipes %}
-    <h3>{{ recipe["name"][0] }}</h3>
-    <br>
-    <h4>Ingredients:</h4>
-    <div class="divcenter">
-        <table class="">
-            <tbody>
-                <tr>
-                    <td class="table-ingredients">
-                    {% for i in recipe["ingredients"] %}
-                    <li>{{ i[0] }}</li>
-                    {% endfor %}
-                    </td>
-                    <td class="table-amounts">
-                    {% for a in recipe["amounts"] %}
-                    <li>{{ a }} </li>
-                    {% endfor %}
-                    </td>
-                    <td class="table-measures">
-                    {% for m in recipe["measures"] %}
-                    <li>{{ m[0] }}</li>
-                    {% endfor %}
-                    </td>
-                </tr>  
-            </tbody>
-        </table>
-    
+        <h3>{{ recipe["name"][0] }}</h3>
         <br>
-        <h4>Instructions:</h4>
-        <p>{{ recipe["instructions"][0] }}</p>
-        <p><em><strong>Category:</strong> {{ recipe["category"][0] }}</em></p>
-        <h3>-</h3>
-    </div>
-    {% endfor %}
+        <p><strong>Ingredientes:</strong></p>
+        <div class="divcenter">
+            <table class="">
+                <tbody>
+                    <tr>
+                        <td class="table-ingredients">
+                        {% for i in recipe["ingredients"] %}
+                        <li>{{ i[0] }}</li>
+                        {% endfor %}
+                        </td>
+                        <td class="table-amounts">
+                        {% for a in recipe["amounts"] %}
+                        <li>{{ a }} </li>
+                        {% endfor %}
+                        </td>
+                        <td class="table-measures">
+                        {% for m in recipe["measures"] %}
+                        <li>{{ m[0] }}</li>
+                        {% endfor %}
+                        </td>
+                    </tr>  
+                </tbody>
+            </table>
+        
+            <br>
+            <p><strong>Instrucciones:</strong></p>
+            <p>{{ recipe["instructions"][0] }}</p>
+            <p><em>Categoría: {{ recipe["category"][0] }}</em></p>
+            <h3>-------------------</h3>
+        </div>
+        {% endfor %}
 
 {% endblock %}

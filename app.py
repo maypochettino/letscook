@@ -308,11 +308,14 @@ def addrecipe():
         data_ingredients = db.execute('SELECT name FROM ingredients')
         ingredients = [i[0] for i in data_ingredients]
 
-        for i, a, m in zip(ingredient,amount,measure):
-
-            if i not in ingredients:
+        for i in ingredient:
+            if i.capitalize() in ingredients:
+                pass
+            else:
                 db.execute("INSERT INTO ingredients (name) VALUES (?)", [i.capitalize()])
                 conexion.commit()
+
+        for i, a, m in zip(ingredient,amount,measure):
 
             ingredient_id=db.execute("SELECT id FROM ingredients WHERE name=?", [i.capitalize()]).fetchone()
 

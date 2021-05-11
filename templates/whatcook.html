@@ -5,9 +5,10 @@
 {% endblock %}
 
 {% block main %}
-<h3>You could cook the following recipes with your ingredients and maybe others too:</h3>
+<h2 style="font-size: 1.2em">Podés cocinar las siguientes recetas con tus ingredientes (y tal vez algunos más):</h2>
+<img class="padding1" src="/static/imgs/masa.png" alt="kneading"/>
     <br>
-    {% for recipe in resultRecipes %}
+        {% for recipe in resultRecipes %}
         <h3>{{ recipe["name"][0] }}</h3>
         <br>
         <p><strong>Ingredientes:</strong></p>
@@ -38,7 +39,7 @@
             <p><strong>Instrucciones:</strong></p>
             <p>{{ recipe["instructions"][0] }}</p>
             <p><em>Categoría: {{ recipe["category"][0] }}</em></p>
-            <h3>-------------------</h3>
+            <h3 style="color: rgba(153,112,66,0.6)">-------------------</h3>
         </div>
         {% endfor %}
 

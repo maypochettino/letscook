@@ -22,7 +22,6 @@
     </head>
 
     <body>
-    <p>Página en proceso...</p>
         <div class="bg-yellow" id="nav">
             <p class="center"><img src="/static/imgs/1letscook_logo.png"/></p>
             <nav class="navbar navbar-expand-md navbar-light">
@@ -33,16 +32,16 @@
                     {% if session.user_id %}
                         <ul class="navbar-nav mr-auto mt-2">
                             <li class="nav-item"><a class="nav-link" href="/"><strong>Inicio</strong></a></li>
-                            <li class="nav-item"><a class="nav-link" href="/recipeslist"><strong>Recipes</strong></a></li>
-                            <li class="nav-item"><a class="nav-link" href="/addrecipe"><strong>Add recipe</strong></a></li>
+                            <li class="nav-item"><a class="nav-link" href="/recipeslist"><strong>Recetas</strong></a></li>
+                            <li class="nav-item"><a class="nav-link" href="/addrecipe"><strong>Agregar receta</strong></a></li>
                         </ul>
                         <ul class="navbar-nav ml-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/logout">Salir</a></li>
                         </ul>
                     {% else %}
                         <ul class="navbar-nav ml-auto mt-2">
-                            <li class="nav-item"><a class="nav-link" href="/register"><strong>Register</strong></a></li>
-                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/register"><strong>Registrarse</strong></a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">Ingresar</a></li>
                         </ul>
                     {% endif %}
                 </div>

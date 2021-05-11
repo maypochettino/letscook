@@ -6,6 +6,8 @@ import sqlite3
 from tempfile import mkdtemp
 from werkzeug.exceptions import default_exceptions, HTTPException, InternalServerError
 from werkzeug.security import check_password_hash, generate_password_hash
+import psycopg2
+import sys
 
 import requests
 import urllib.parse
@@ -34,11 +36,16 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 #Config postgreSQL Heroku
-SECRET_KEY = os.environ.get('SECRET_KEY')
-SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-# Configure  SQLite database
-conexion = sqlite3.connect('recipes.db', check_same_thread=False)
-db = conexion.cursor()
+#SECRET_KEY = os.environ.get('SECRET_KEY')
+# SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
+# Configure  SQLite database to POSTGRESQL
+conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
+conn = psycopg2.connect(conn_string)
+db = conn.cursor()
+
+
+#conexion = sqlite3.connect('recipes.db', check_same_thread=False)
+#db = conexion.cursor()
 
 #login_required
 def login_required(f):
@@ -339,11 +346,9 @@ def recipeslist():
     #search recipe from name
     if request.method == "POST":
         name=request.form.get("search").lower()
-        print(name)
 
         data_recipe_ids = db.execute('SELECT id FROM recipes WHERE LOWER(name) LIKE (?) ', ["%"+name+"%"]).fetchall()
         recipe_ids = [id[0] for id in data_recipe_ids]
-        print(recipe_ids)
         
         resultRecipes = []
         for i in recipe_ids:
@@ -384,7 +389,6 @@ def recipeslist():
         #select ids of recipes order by name
         data_recipe_ids = db.execute('SELECT id FROM recipes ORDER BY UPPER(name)').fetchall()
         recipe_ids = [id[0] for id in data_recipe_ids]
-        print(recipe_ids)
 
         #create tables of recipes with all the items
         resultRecipes = []

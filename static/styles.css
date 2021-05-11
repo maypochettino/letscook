@@ -101,7 +101,7 @@ footer a:visited{
 }
 
 button {
-    background-color: rgb(177,114,105);
+    background-color: #be8657;
     border: none;
     color: white;
     padding: 10px 25px;
@@ -113,13 +113,13 @@ button {
     transition-duration: 0.4s;
 }
 .buttonindex {
-    background-color: rgb(159,138,130);
+    background-color: #997042;
 }
 
 
 
 button:hover {
-    background-color: rgb(177,114,105,0.8);
+    background-color: #e3c394;
 }
 
 input, select, textarea {
@@ -216,3 +216,33 @@ table{
     width: 90px;
     max-width: 20%;
 }
+
+h2{
+    color: #997042;
+    font-weight: bold;
+}
+
+h3{
+    color: #ba4a1c;
+    letter-spacing: 0.1em;
+
+}
+
+.padding1{
+    padding: 1em;
+}
+
+.mangasmall{
+    display: none;
+}
+
+.mangabig{
+    display: none;
+    position: relative;
+    float: left;
+    
+}
+
+
+@media (max-width: 750px) { .mangasmall { display: inline; } }
+@media (min-width: 800px) { .mangabig{ display: inline;} }

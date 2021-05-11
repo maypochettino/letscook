@@ -5,14 +5,16 @@
 {% endblock %}
 
 {% block main %}
-    <form action="/login" method="post">
-        <p style="color: red">{{ message }}</p>
-        <div class="form-group">
-            <input autocomplete="off" autofocus class="inputfocus form-control" name="username" placeholder="Username" type="text">
-        </div>
-        <div class="form-group">
-            <input class="inputfocus form-control" name="password" placeholder="Password" type="password">
-        </div>
-        <button class="" type="submit">Log In</button>
-    </form>
+<img class="padding1" src="/static/imgs/cake.png" alt="egg"/>
+<form action="/login" method="post">
+    <p style="color: red">{{ message }}</p>
+    <div class="form-group">
+        <input autocomplete="off" autofocus class="inputfocus form-control" name="username" placeholder="Username" type="text">
+    </div>
+    <div class="form-group">
+        <input class="inputfocus form-control" name="password" placeholder="Contraseña" type="password">
+    </div>
+    <button class="" type="submit">Ingresar</button>
+</form>
+<br>
 {% endblock %}

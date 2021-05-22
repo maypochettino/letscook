@@ -39,10 +39,14 @@ Session(app)
 #SECRET_KEY = os.environ.get('SECRET_KEY')
 # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 # Configure  SQLite database to POSTGRESQL
-conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
-conn = psycopg2.connect(conn_string)
+
+DATABASE_URL = os.environ['DATABASE_URL']
+
+conn = psycopg2.connect(DATABASE_URL, sslmode='require')
 db = conn.cursor()
 
+#conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
+#conn = psycopg2.connect(conn_string)
 
 #conexion = sqlite3.connect('recipes.db', check_same_thread=False)
 #db = conexion.cursor()
@@ -206,6 +210,8 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     #Register user
+    hola = db.execute("SELECT * FROM measures")
+    print(hola)
     if request.method == "POST":
         
         #username and email
@@ -216,6 +222,7 @@ def register():
             flash("Missing username")
             return render_template("register.html")
         data_usernames = db.execute('SELECT username FROM users')
+        print(data_usernames)
         usernames = [i[0] for i in data_usernames]
 
         if not email:

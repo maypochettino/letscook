@@ -36,26 +36,14 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 #Config postgreSQL Heroku
-#SECRET_KEY = os.environ.get('SECRET_KEY')
-# SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
-# Configure  SQLite database to POSTGRESQL
-
-#DATABASE_URL = os.environ['DATABASE_URL']
-
-#conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-
 conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
 conn = psycopg2.connect(conn_string)
 db = conn.cursor()
-
-#conexion = sqlite3.connect('recipes.db', check_same_thread=False)
-#db = conexion.cursor()
 
 #login_required
 def login_required(f):
     """
     Decorate routes to require login.
-
     https://flask.palletsprojects.com/en/1.1.x/patterns/viewdecorators/
     """
     @wraps(f)

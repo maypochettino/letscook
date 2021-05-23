@@ -40,13 +40,13 @@ Session(app)
 # SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
 # Configure  SQLite database to POSTGRESQL
 
-DATABASE_URL = os.environ['DATABASE_URL']
+#DATABASE_URL = os.environ['DATABASE_URL']
 
-conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+#conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+
+conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
+conn = psycopg2.connect(conn_string)
 db = conn.cursor()
-
-#conn_string = "host='ec2-54-163-254-204.compute-1.amazonaws.com' dbname='ddgr7m4rfmg5cb' user='vrdghyvozfazhd' password='548de9c3edc5e0eb8e3991122629f9c6cdfb3d8741cde23110c83cd4af131533'"
-#conn = psycopg2.connect(conn_string)
 
 #conexion = sqlite3.connect('recipes.db', check_same_thread=False)
 #db = conexion.cursor()
@@ -74,7 +74,8 @@ def index():
         ingredients = request.form.get('ingredients').split(", ")
         
         #ingredient's list of db
-        data_nameIngredients = db.execute('SELECT name FROM ingredients').fetchall()
+        db.execute('SELECT name FROM ingredients')
+        data_nameIngredients = db.fetchall()
         nameIngredients = [i[0] for i in data_nameIngredients]
         
         #names of recipes that can cook with ingredients
@@ -84,17 +85,20 @@ def index():
                 msg=f'Sorry. "{ingredient}" is not in ingredient list.'
                 return render_template("index.html", message=msg)
             else:
-                data_ingredient_ids = db.execute('SELECT id FROM ingredients WHERE name=%s', [ingredient.capitalize()]).fetchall()
+                db.execute('SELECT id FROM ingredients WHERE name=%s', [ingredient.capitalize()])
+                data_ingredient_ids = db.fetchall()
                 ingredient_ids = [i[0] for i in data_ingredient_ids]
 
                 prewhatcook=[]
                 for i_id in ingredient_ids:
-                    data_recipe_ids = db.execute('SELECT recipe_id FROM RecipeIngredients WHERE ingredient_id=%s', [i_id]).fetchall()
+                    db.execute('SELECT recipe_id FROM public."RecipeIngredients" WHERE ingredient_id=%s', [i_id])
+                    data_recipe_ids = db.fetchall()
                     recipe_ids = [id[0] for id in data_recipe_ids]
 
                     preprewhatcook=[]
                     for r_id in recipe_ids:
-                        data_nameRecipe =  db.execute("SELECT name FROM recipes WHERE id=%s", [r_id]).fetchall()
+                        db.execute("SELECT name FROM recipes WHERE id=%s", [r_id])
+                        data_nameRecipe =  db.fetchall()
                         nameRecipe = [r[0] for r in data_nameRecipe]
                         preprewhatcook.append(nameRecipe[0])
 
@@ -107,7 +111,8 @@ def index():
         #ids of recipes in ordered
         recipe_ids=[]
         for recipe_name in ordered:
-            data_recipe_id = db.execute("SELECT id FROM recipes WHERE name=%s", [recipe_name]).fetchall()
+            db.execute("SELECT id FROM recipes WHERE name=%s", [recipe_name])
+            data_recipe_id = db.fetchall()
             recipe_id = [r[0] for r in data_recipe_id]
             recipe_ids.append(recipe_id[0])
 
@@ -115,26 +120,34 @@ def index():
         resultRecipes = []
         for i in recipe_ids:
 
-            data_amounts=db.execute("SELECT amount FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT amount FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_amounts=db.fetchall()
             amounts=[a[0] for a in data_amounts]
 
-            data_ingredient_ids=db.execute("SELECT ingredient_id FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT ingredient_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_ingredient_ids=db.fetchall()
             ingredient_ids=[i[0] for i in data_ingredient_ids]
 
-            data_measure_ids=db.execute("SELECT measure_id FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT measure_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_measure_ids=db.fetchall()
             measure_ids=[a[0] for a in data_measure_ids]
 
             ingredientRecipe=[]
             measureRecipe=[]
             for x, y in zip(ingredient_ids, measure_ids):
-                adding=db.execute("SELECT name FROM ingredients WHERE id=%s", [x]).fetchone()
+                db.execute("SELECT name FROM ingredients WHERE id=%s", [x])
+                adding=db.fetchone()
                 ingredientRecipe.append(adding)
-                addmeasure=db.execute("SELECT name FROM measures WHERE id=%s", [y]).fetchone()
+                db.execute("SELECT name FROM measures WHERE id=%s", [y])
+                addmeasure=db.fetchone()
                 measureRecipe.append(addmeasure)
 
-            name=db.execute("SELECT name FROM recipes WHERE id=%s", [i]).fetchone()
-            instructions=db.execute("SELECT instructions FROM recipes WHERE id=%s", [i]).fetchone()
-            category=db.execute("SELECT category FROM recipes WHERE id=%s", [i]).fetchone()
+            db.execute("SELECT name FROM recipes WHERE id=%s", [i])
+            name=db.fetchone()
+            db.execute("SELECT instructions FROM recipes WHERE id=%s", [i])
+            instructions=db.fetchone()
+            db.execute("SELECT category FROM recipes WHERE id=%s", [i])
+            category=db.fetchone()
 
             resultRecipe={
                 "name": name,
@@ -178,9 +191,8 @@ def login():
         username = request.form.get("username")
         db.execute("SELECT hash FROM users WHERE username = %s", [username] )
         pwhash = db.fetchone()
-
         # Ensure username exists and password is correct    
-        if len(pwhash) != 1 or not check_password_hash(pwhash[0], request.form.get("password")):
+        if not pwhash or not check_password_hash(pwhash[0], request.form.get("password")):
             msg="invalid username and/or password"
             return render_template("login.html", message=msg)
 
@@ -210,8 +222,6 @@ def logout():
 @app.route("/register", methods=["GET", "POST"])
 def register():
     #Register user
-    hola = db.execute("SELECT * FROM measures")
-    print(hola)
     if request.method == "POST":
         
         #username and email
@@ -221,23 +231,25 @@ def register():
         if not username:
             flash("Missing username")
             return render_template("register.html")
-        data_usernames = db.execute('SELECT username FROM users')
-        print(data_usernames)
+        db.execute('SELECT username FROM users')
+        data_usernames = db.fetchall()
         usernames = [i[0] for i in data_usernames]
 
         if not email:
             flash("must provide email")
             return render_template("register.html")
-        data_emails = db.execute('SELECT email FROM users')
+        db.execute('SELECT email FROM users')
+        data_emails = db.fetchall()
         emails = [i[0] for i in data_emails]
 
-        if username in usernames:
-            flash('Username already exists!')
-            return render_template("register.html")
+        if emails and usernames:
+            if username in usernames:
+                flash('Username already exists!')
+                return render_template("register.html")
 
-        if email in emails:
-            flash("Email already exists")
-            return render_template("register.html")
+            if email in emails:
+                flash("Email already exists")
+                return render_template("register.html")
 
         #password
         password = request.form.get("password")
@@ -256,7 +268,7 @@ def register():
 
         hash=generate_password_hash(password)
         db.execute("INSERT INTO users (username, email, hash) VALUES(%s, %s, %s)", (username, email, hash))
-        conexion.commit()
+        conn.commit()
 
         #send email message HACER!!!!!!!!!
         FROM = "letscook"
@@ -301,47 +313,54 @@ def addrecipe():
         #complete all the fields
         if not name or not category or not instructions or not ingredient or not amount or not measure:
             message="Complete all the fields!"
-            data_measures = db.execute('SELECT name FROM measures')
+            db.execute('SELECT name FROM public.measures')
+            data_measures = db.fetchall()
             measures = [m[0] for m in data_measures]
             return render_template("addrecipe.html", message=message, measures=measures)
 
         #save to tables
-        data_namesRecipe = db.execute('SELECT name FROM recipes')
+        db.execute('SELECT name FROM public.recipes')
+        data_namesRecipe = db.fetchall()
         namesRecipe = [nr[0] for nr in data_namesRecipe]
         if name in namesRecipe:
             message="Recipe's name already exist!"
-            data_measures = db.execute('SELECT name FROM measures')
+            db.execute('SELECT name FROM public.measures')
+            data_measures = db.fetchall()
             measures = [m[0] for m in data_measures]
             return render_template("addrecipe.html", message=message, measures=measures)
         else:
-            db.execute("INSERT INTO recipes(name, category, instructions) VALUES(%s,%s,%s)", (name, category, instructions))
-            conexion.commit()
-            recipe_id = db.execute("SELECT id FROM recipes WHERE name=%s", [name]).fetchone()
+            db.execute("INSERT INTO public.recipes(name, category, instructions) VALUES(%s,%s,%s)", (name, category, instructions))
+            conn.commit()
+            db.execute("SELECT id FROM public.recipes WHERE name=%s", [name])
+            recipe_id = db.fetchone()
 
 
-        data_ingredients = db.execute('SELECT name FROM ingredients')
+        db.execute('SELECT name FROM public.ingredients')
+        data_ingredients = db.fetchall()
         ingredients = [i[0] for i in data_ingredients]
 
         for i in ingredient:
             if i.capitalize() in ingredients:
                 pass
             else:
-                db.execute("INSERT INTO ingredients (name) VALUES (%s)", [i.capitalize()])
-                conexion.commit()
+                db.execute("INSERT INTO public.ingredients (name) VALUES (%s)", [i.capitalize()])
+                conn.commit()
 
         for i, a, m in zip(ingredient,amount,measure):
 
-            ingredient_id=db.execute("SELECT id FROM ingredients WHERE name=%s", [i.capitalize()]).fetchone()
+            db.execute("SELECT id FROM public.ingredients WHERE name=%s", [i.capitalize()])
+            ingredient_id = db.fetchone()
+            db.execute("SELECT id FROM public.measures WHERE name=%s", [m])
+            measure_id = db.fetchone()
 
-            measure_id=db.execute("SELECT id FROM measures WHERE name=%s", [m]).fetchone()
-
-            db.execute("INSERT INTO RecipeIngredients(recipe_id, ingredient_id, measure_id, amount) VALUES (%s, %s, %s, %s)", (recipe_id[0], ingredient_id[0], measure_id[0], a))
-            conexion.commit()
+            db.execute('INSERT INTO public."RecipeIngredients"(recipe_id, ingredient_id, measure_id, amount) VALUES (%s, %s, %s, %s)', (recipe_id[0], ingredient_id[0], measure_id[0], a))
+            conn.commit()
 
         return redirect("/recipeslist")
 
     else:
-        data_measures = db.execute('SELECT name FROM measures')
+        db.execute('SELECT name FROM public.measures')
+        data_measures = db.fetchall()
         measures = [m[0] for m in data_measures]
         return render_template("addrecipe.html", measures=measures)
 
@@ -354,18 +373,22 @@ def recipeslist():
     if request.method == "POST":
         name=request.form.get("search").lower()
 
-        data_recipe_ids = db.execute('SELECT id FROM recipes WHERE LOWER(name) LIKE (%s) ', ["%"+name+"%"]).fetchall()
+        db.execute('SELECT id FROM recipes WHERE LOWER(name) LIKE (%s) ', ["%"+name+"%"])
+        data_recipe_ids = db.fetchall()
         recipe_ids = [id[0] for id in data_recipe_ids]
         
         resultRecipes = []
         for i in recipe_ids:
-            data_amounts=db.execute("SELECT amount FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT amount FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_amounts= db.fetchall()
             amounts=[a[0] for a in data_amounts]
 
-            data_ingredient_ids=db.execute("SELECT ingredient_id FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT ingredient_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_ingredient_ids = db.fetchall()
             ingredient_ids=[i[0] for i in data_ingredient_ids]
 
-            data_measure_ids=db.execute("SELECT measure_id FROM RecipeIngredients WHERE recipe_id=%s", [i]).fetchall()
+            db.execute('SELECT measure_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_measure_ids = db.fetchall()
             measure_ids=[a[0] for a in data_measure_ids]
 
             ingredientRecipe=[]
@@ -394,32 +417,41 @@ def recipeslist():
     else:
 
         #select ids of recipes order by name
-        data_recipe_ids = db.execute('SELECT id FROM recipes ORDER BY UPPER(name)').fetchall()
+        db.execute('SELECT id FROM recipes ORDER BY UPPER(name)')
+        data_recipe_ids = db.fetchall()
         recipe_ids = [id[0] for id in data_recipe_ids]
 
         #create tables of recipes with all the items
         resultRecipes = []
         for i in recipe_ids:
-            data_amounts = db.execute('SELECT amount FROM RecipeIngredients WHERE recipe_id=%s', [i])
+            db.execute('SELECT amount FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_amounts = db.fetchall()
             amounts = [a[0] for a in data_amounts]
             
-            data_ingredient_ids = db.execute('SELECT ingredient_id FROM RecipeIngredients WHERE recipe_id=%s', [i])
+            db.execute('SELECT ingredient_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_ingredient_ids = db.fetchall()
             ingredient_ids = [i[0] for i in data_ingredient_ids]
             
-            data_measure_ids = db.execute('SELECT measure_id FROM RecipeIngredients WHERE recipe_id=%s', [i])
+            db.execute('SELECT measure_id FROM public."RecipeIngredients" WHERE recipe_id=%s', [i])
+            data_measure_ids = db.fetchall()
             measure_ids = [m[0] for m in data_measure_ids]
 
             ingredientRecipe=[]
             measureRecipe=[]
             for x, y in zip(ingredient_ids, measure_ids):
-                adding=db.execute("SELECT name FROM ingredients WHERE id=%s", [x]).fetchone()
+                db.execute("SELECT name FROM public.ingredients WHERE id=%s", [x])
+                adding=db.fetchone()
                 ingredientRecipe.append(adding)
-                addmeasure=db.execute("SELECT name FROM measures WHERE id=%s", [y]).fetchone()
+                db.execute("SELECT name FROM public.measures WHERE id=%s", [y])
+                addmeasure=db.fetchone()
                 measureRecipe.append(addmeasure)
 
-            name=db.execute("SELECT name FROM recipes WHERE id=%s", [i]).fetchone()
-            instructions=db.execute("SELECT instructions FROM recipes WHERE id=%s", [i]).fetchone()
-            category=db.execute("SELECT category FROM recipes WHERE id=%s", [i]).fetchone()
+            db.execute("SELECT name FROM public.recipes WHERE id=%s", [i])
+            name=db.fetchone()
+            db.execute("SELECT instructions FROM public.recipes WHERE id=%s", [i])
+            instructions=db.fetchone()
+            db.execute("SELECT category FROM public.recipes WHERE id=%s", [i])
+            category=db.fetchone()
 
             resultRecipe={
                 "name": name,
